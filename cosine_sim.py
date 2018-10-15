@@ -14,11 +14,10 @@ class PlayerRecommendationSystem(object):
 
         return model
 
-    def rec_by_users(self, model, index, neighbors):
+    def rec_by_users(self, model, name, age, neighbors):
         matrix = self.matrix
-        query_index = index
         distances, indices = model.kneighbors(
-            matrix.iloc[query_index].values
+            matrix.loc[(df['Name']==name)][:1]].values
             .reshape(1, -1), n_neighbors = neighbors)
 
         for i in range(0, len(distances.flatten())):
@@ -26,3 +25,9 @@ class PlayerRecommendationSystem(object):
                 print('Recommendations for {0}:\n'.format(matrix.index[query_index]))
             else:
                 print('{0}: {1}'.format(i, matrix.index[indices.flatten()[i]]))
+
+    def name_to_index(name, age):
+    index = current.loc[(current['Name']==name) & current['Age']==age]
+    return index
+
+&df['Age']==age
