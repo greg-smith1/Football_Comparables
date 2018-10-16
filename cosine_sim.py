@@ -1,33 +1,31 @@
 import pandas as pd
 import numpy as np
-from sklearn.neighbors import NearestNeighbors
 
+from sklearn.neighbors import NearestNeighbors
 
 class PlayerRecommendationSystem(object):
 
-    def __init__(self, matrix):
-        self.matrix = matrix
+    def __init__(self, comparison_matrix):
+        self.matrix = comparison_matrix
+        self.age_matrix = None
 
-    def near_neighbors(self):
+    def near_neighbors(self, age):
         model = NearestNeighbors(metric='cosine', algorithm='brute')
-        model.fit(self.matrix)
-
+        self.age_matrix = self.matrix.loc[self.matrix['Age']==age]
+        model.fit(self.age_matrix)
         return model
 
-    def rec_by_users(self, model, name, age, neighbors):
-        matrix = self.matrix
+    def rec_by_users(self, model, name, age, neighbors=6):
+        model = self.near_neighbors(age)
+        if len(self.age_matrix) < neighbors:
+            neighbors = len(self.age_matrix)
         distances, indices = model.kneighbors(
-            matrix.loc[(df['Name']==name)][:1]].values
-            .reshape(1, -1), n_neighbors = neighbors)
+            name.values.reshape(1, -1), n_neighbors=neighbors)
 
         for i in range(0, len(distances.flatten())):
             if i == 0:
-                print('Recommendations for {0}:\n'.format(matrix.index[query_index]))
+                print('Recommendations for {0}:\n'.format(name.index[0]))
             else:
-                print('{0}: {1}'.format(i, matrix.index[indices.flatten()[i]]))
+                print('{0}: {1}, {2}'.format(i, self.age_matrix.index[indices.flatten()[i]], distances.flatten()[i]))
 
-    def name_to_index(name, age):
-    index = current.loc[(current['Name']==name) & current['Age']==age]
-    return index
 
-&df['Age']==age
