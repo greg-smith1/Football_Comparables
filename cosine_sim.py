@@ -12,7 +12,7 @@ class PlayerCompSystem(object):
     Arguments:
 
     comparison_matrix -- a pandas DataFrame consisting entirely of numerical
-    values, and indices that are useful to the viewer
+        values, and indices that are useful to the viewer
     """
 
     def __init__(self, comparison_matrix):
