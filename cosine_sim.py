@@ -1,6 +1,7 @@
 
 import pandas as pd
 import numpy as np
+import os
 
 from sklearn.neighbors import NearestNeighbors
 
@@ -26,8 +27,9 @@ class PlayerCompSystem(object):
         name -- (str) the name of the player we want to compare to
         matrix -- (DataFrame) the DataFrame that we are querying
         """
-        row = matrix.loc[matrix.index==name]
-        return row
+        row = matrix.loc[matrix.index==name][:1]
+        print(row)
+        return row, row['Age']
 
     def near_neighbors(self, age):
         """Use our input matrix to generate and train a cosine similarity model
@@ -38,11 +40,11 @@ class PlayerCompSystem(object):
         age -- (int) the age of player we are comparing
         """
         model = NearestNeighbors(metric='cosine', algorithm='brute')
-        self.age_matrix = self.matrix.loc[self.matrix['Age']==age]
+        self.age_matrix = self.matrix#.loc[self.matrix['Age']==age]
         model.fit(self.age_matrix)
         return model
 
-    def rec_by_users(self, name, age=24, neighbors=11):
+    def rec_by_users(self, name, neighbors=11):
         """Use our matrix to create a model, train it, and return the n-most
         similar indices from our data.
 
@@ -55,23 +57,32 @@ class PlayerCompSystem(object):
             our query player as its first result, so this must be equal to
             (number of comparables + 1) (default is 11)
         """
+        test_player, age = self.get_row(name, self.matrix)
+        input('Train')
         model = self.near_neighbors(age)
-        input = self.get_row(name, self.matrix)
         if len(self.age_matrix) < neighbors:
             neighbors = len(self.age_matrix)
+        input('Return similarities')
         distances, indices = model.kneighbors(
-            input.values.reshape(1, -1), n_neighbors=neighbors)
+            test_player.values.reshape(1, -1), n_neighbors=neighbors)
         
         #print(distances[:4], indices[:4])
         
         for i in range(0, len(distances.flatten())):
             if i == 0:
                 print('Recommendations for {0} ({1}):\n'.format(
-                            name.index[0], distances.flatten()[0]))
+                            name, distances.flatten()[0]))
             else:
                 print('{0}: {1}, {2}'.format(
                     i, self.matrix.index[indices.flatten()[i]], 
-                                        distances.flatten()[i]))
+                                        distances.flatten()[i].round(5)))
 
 
-
+if __name__=='__main__':
+    df = pd.read_csv('football_total.csv', index_col='Unnamed: 1')
+    recs = PlayerCompSystem(df)
+    while True:
+        os.system('clear')
+        player = input('\nWho would you like to compare?\n')
+        recs.rec_by_users(player)
+        input()
