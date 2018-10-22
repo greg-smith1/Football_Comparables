@@ -18,8 +18,9 @@ class PlayerCompSystem(object):
 
     def __init__(self, comparison_matrix):
         self.matrix = comparison_matrix
+#        self.lookup_matrix = pd.read_csv('football_lookup.csv')
 
-    def get_row(self, name, matrix):
+    def get_row(self, name):
         """Takes in an athlete name, and returns the row with that index
         
         Arguments:
@@ -27,7 +28,9 @@ class PlayerCompSystem(object):
         name -- (str) the name of the player we want to compare to
         matrix -- (DataFrame) the DataFrame that we are querying
         """
-        row = matrix.loc[matrix.index==name][:1]
+        #row = self.lookup_matrix.loc[self.slookup_matrix.index==name]
+        row = self.matrix.loc[self.matrix.index==name][:1]
+
         print(row)
         return row, row['Age']
 
@@ -57,7 +60,7 @@ class PlayerCompSystem(object):
             our query player as its first result, so this must be equal to
             (number of comparables + 1) (default is 11)
         """
-        test_player, age = self.get_row(name, self.matrix)
+        test_player, age = self.get_row(name)
         input('Train')
         model = self.near_neighbors(age)
         if len(self.age_matrix) < neighbors:
