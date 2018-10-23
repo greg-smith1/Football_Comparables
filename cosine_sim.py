@@ -81,6 +81,7 @@ class PlayerCompSystem(object):
                                         distances.flatten()[i].round(5)))
 
 
+
 if __name__=='__main__':
     df = pd.read_csv('football_total.csv', index_col='Unnamed: 1')
     recs = PlayerCompSystem(df)
