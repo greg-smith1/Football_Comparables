@@ -1,13 +1,13 @@
 import os
 import pandas as pd
 
-from cosine_sim import PlayerRecommendationSystem as prs
+from cosine_sim import PlayerCompSystem as pcs
 
-while True:
-    os.system('clear')
-    lookup_name = input('/n/nPlayer Name: ')
-#    subset = 
-
-
-
-
+if __name__=='__main__':
+    df = pd.read_csv('football_total.csv', index_col='Unnamed: 1')
+    recs = PlayerCompSystem(df)
+    while True:
+        os.system('clear')
+        player = input('\nWho would you like to compare?\n')
+        recs.rec_by_users(player)
+        input()
