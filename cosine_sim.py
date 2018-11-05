@@ -6,6 +6,7 @@ import os
 from sklearn.neighbors import NearestNeighbors
 
 class PlayerCompSystem(object):
+    
     """Python class for creation, training, and comparison of data using cosine
     similarity. The algorithm will filter and return indices of the data, so
     these indices should be in a format that the user will understand.
